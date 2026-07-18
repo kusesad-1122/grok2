@@ -159,4 +159,44 @@ object GrokLauncher {
     }
 
     private fun shellQuote(s: String): String = "'" + s.replace("'", "'\\''") + "'"
+
+    // ── 图形模式:用真 grok 的 headless streaming-json 驱动 ──────────────
+    /**
+     * 构建 headless 单轮进程:`grok -p <prompt> --output-format streaming-json --yolo
+     * [--resume <sid>] --rules <中文规则>`。GUI 前端读取其 JSON 事件流渲染,
+     * 后端就是真实 grok 引擎(它自己的完整工具集 + 权限,--yolo 自动放行)。
+     * 与终端模式共用同一份 config.toml / 环境 / GROK_HOME(即同一套厂商配置与会话)。
+     */
+    fun buildHeadlessProcess(
+        context: Context,
+        prefs: Prefs,
+        prompt: String,
+        resumeSessionId: String?
+    ): ProcessBuilder {
+        writeConfig(context, prefs)
+        val bin = grokBinary(context)
+        val args = mutableListOf(
+            bin.absolutePath,
+            "-p", prompt,
+            "--output-format", "streaming-json",
+            "--yolo", // 自动放行工具执行(headless 无交互权限弹窗)
+            "--rules", "始终使用简体中文回复;执行删除/刷写/格式化等破坏性命令前先用一句话说明风险。"
+        )
+        val model = prefs.model(prefs.activeProviderId).trim()
+        if (model.isNotEmpty()) { args.add("-m"); args.add(model) }
+        if (!resumeSessionId.isNullOrEmpty()) { args.add("--resume"); args.add(resumeSessionId) }
+
+        val pb = ProcessBuilder(args)
+        pb.directory(workDir(context))
+        pb.redirectErrorStream(false)
+        val envMap = pb.environment()
+        // 用我们组装的 env 覆盖(ProcessBuilder 默认继承当前进程环境)。
+        for (kv in buildEnv(context, prefs)) {
+            val idx = kv.indexOf('=')
+            if (idx > 0) envMap[kv.substring(0, idx)] = kv.substring(idx + 1)
+        }
+        return pb
+    }
+
+    fun isBinaryReady(context: Context): Boolean = grokBinary(context).canExecute()
 }

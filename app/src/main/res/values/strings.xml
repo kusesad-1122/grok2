@@ -12,6 +12,14 @@
     <string name="launcher_remember">记住本次选择,下次直接进入</string>
     <string name="menu_switch_mode">切换模式</string>
 
+    <!-- 拉取模型 -->
+    <string name="btn_fetch_models">拉取模型列表</string>
+    <string name="fetching_models">正在拉取模型列表…</string>
+    <string name="fetch_failed">拉取失败:%1$s</string>
+    <string name="no_models">未获取到模型,请检查 base_url 与 API Key,或手动填写。</string>
+    <string name="pick_model">选择模型</string>
+    <string name="fetch_need_key">请先填写 API Key 再拉取模型。</string>
+
     <!-- 状态行 -->
     <string name="status_provider">厂商:%1$s</string>
     <string name="status_model">模型:%1$s</string>

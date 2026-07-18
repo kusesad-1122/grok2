@@ -82,6 +82,15 @@ class ChatAdapter(private val items: MutableList<ChatItem>) :
         notifyItemInserted(items.size - 1)
     }
 
+    fun replaceAt(index: Int, item: ChatItem) {
+        if (index in items.indices) {
+            items[index] = item
+            notifyItemChanged(index)
+        }
+    }
+
+    fun lastIndex(): Int = items.size - 1
+
     fun clear() {
         val n = items.size
         items.clear()

@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity(), TerminalSessionClient, TerminalViewCli
         )
         binding.terminalView.attachSession(session)
         binding.terminalView.setTerminalViewClient(this)
+        // 启动后自动获焦并唤起键盘,省去用户手动点。
+        binding.terminalView.post { showKeyboard() }
         if (warnNoKey) {
             Toast.makeText(this, R.string.no_api_key_warn, Toast.LENGTH_LONG).show()
         }
@@ -145,6 +147,7 @@ class MainActivity : AppCompatActivity(), TerminalSessionClient, TerminalViewCli
         val tab = { sendBytes(byteArrayOf(9)) }
         val enter = { sendBytes(byteArrayOf(13)) }
         val keys = listOf(
+            Key("⌨") { showKeyboard() },
             Key("ESC") { esc() },
             Key("TAB") { tab() },
             Key("CTRL") { ctrlLatch = !ctrlLatch; refreshLatchButtons() },
@@ -230,11 +233,26 @@ class MainActivity : AppCompatActivity(), TerminalSessionClient, TerminalViewCli
     }
 
     override fun onSingleTapUp(e: MotionEvent) {
-        // 弹出软键盘。
+        showKeyboard()
+    }
+
+    /** 可靠地唤起软键盘:先获焦,再 showSoftInput,失败则 toggle 兜底。 */
+    private fun showKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE)
                 as android.view.inputmethod.InputMethodManager
+        binding.terminalView.isFocusable = true
+        binding.terminalView.isFocusableInTouchMode = true
         binding.terminalView.requestFocus()
-        imm.showSoftInput(binding.terminalView, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        val shown = imm.showSoftInput(
+            binding.terminalView,
+            android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
+        )
+        if (!shown) {
+            // 某些机型 showSoftInput 首次返回 false,用 toggle 强制唤起。
+            imm.toggleSoftInput(
+                android.view.inputmethod.InputMethodManager.SHOW_FORCED, 0
+            )
+        }
     }
 
     override fun shouldBackButtonBeMappedToEscape(): Boolean = false
