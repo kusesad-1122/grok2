@@ -67,6 +67,24 @@ object GrokLauncher {
         }
 
         File(grokHome(context), "config.toml").writeText(sb.toString())
+        writeChineseRules(context)
+    }
+
+    /**
+     * 路线 A 下 grok 的内建系统提示词为英文;通过 grok 的“项目规则”(AGENTS.md)注入
+     * 中文指令,让 agent 始终用简体中文回复,并在破坏性命令前说明风险。
+     */
+    private fun writeChineseRules(context: Context) {
+        val rules = """
+            # 会话规则(Grok Build 安卓版)
+
+            - 始终使用**简体中文**与用户交流(除非用户明确要求其它语言)。
+            - 你运行在一台安卓手机上,可用的 shell 工具经受限环境(或 root)执行。
+            - 执行任何**破坏性命令**(删除文件、刷写分区、格式化、`rm -rf`、`dd`、覆盖系统文件等)
+              之前,先用一句话说明该命令的风险与影响,再执行。
+            - 命令输出较长时,优先给出要点摘要,避免刷屏。
+        """.trimIndent()
+        runCatching { File(workDir(context), "AGENTS.md").writeText(rules) }
     }
 
     /** TOML 字符串转义(基础安全:反斜杠与引号)。 */
