@@ -2,6 +2,16 @@
 <resources>
     <string name="app_name">Grok Build</string>
 
+    <!-- 启动选择页 -->
+    <string name="launcher_pick">选择运行模式</string>
+    <string name="launcher_subtitle">同一个 App,两种模式随你切换</string>
+    <string name="mode_terminal">grok 原版终端</string>
+    <string name="mode_terminal_desc">运行真实 grok 二进制,功能最完整(终端 TUI,需少量终端操作)</string>
+    <string name="mode_gui">图形模式</string>
+    <string name="mode_gui_desc">grok 神似的图形聊天界面,软键盘输入(功能为复刻子集)</string>
+    <string name="launcher_remember">记住本次选择,下次直接进入</string>
+    <string name="menu_switch_mode">切换模式</string>
+
     <!-- 状态行 -->
     <string name="status_provider">厂商:%1$s</string>
     <string name="status_model">模型:%1$s</string>

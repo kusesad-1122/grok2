@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity(), TerminalSessionClient, TerminalViewCli
             menu.add(0, 5, 4, R.string.menu_font_bigger)
             menu.add(0, 6, 5, R.string.menu_font_smaller)
             menu.add(0, 7, 6, R.string.menu_about)
+            menu.add(0, 8, 7, R.string.menu_switch_mode)
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     1 -> startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
@@ -116,6 +117,7 @@ class MainActivity : AppCompatActivity(), TerminalSessionClient, TerminalViewCli
                     5 -> changeFont(+1)
                     6 -> changeFont(-1)
                     7 -> startActivity(Intent(this@MainActivity, AboutActivity::class.java))
+                    8 -> LauncherActivity.backToPicker(this@MainActivity)
                 }
                 true
             }

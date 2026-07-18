@@ -129,3 +129,18 @@ Apache License 2.0。移植自 xai-org/grok-build;Termux 终端模块亦为 Apac
 - 两种协议的 JSON 序列化/解析与命令引用均有单元测试(`gui/src/test`,`:gui:testDebugUnitTest` 通过)。
 
 构建:`./gradlew :gui:assembleDebug` → `gui/build/outputs/apk/debug/gui-debug.apk`。
+
+---
+
+## 统一 App:一个入口,两种模式(最终形态)
+
+现已把两种模式合并进**同一个 App**(`dist/app-debug.apk`,约 77MB,含真 grok 二进制):
+
+- 打开先进**启动选择页**:
+  - **grok 原版终端**:运行真实 grok 二进制,功能最完整(TUI);
+  - **图形模式**:grok 神似的图形聊天,软键盘输入(功能为复刻子集)。
+- 可勾选“记住选择”,下次直接进入;任一模式的 `⋮` 菜单里有“切换模式”随时切回。
+- 两种模式共享 root 授权;各自的厂商/Key 设置独立保存。
+
+> 体积说明:APK 约 77MB 几乎全部是 **grok 引擎二进制**(214MB strip 后压缩)。
+> 图形模式本身只有几百 KB 的 Kotlin 代码——大头是为“终端模式跑真 grok”付的。

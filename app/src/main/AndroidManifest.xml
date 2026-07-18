@@ -14,11 +14,10 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.GrokBuild">
 
+        <!-- 启动选择页(入口):选终端模式或图形模式 -->
         <activity
-            android:name=".MainActivity"
+            android:name=".LauncherActivity"
             android:exported="true"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|smallestScreenSize|density"
-            android:windowSoftInputMode="adjustResize"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,15 +25,31 @@
             </intent-filter>
         </activity>
 
+        <!-- 终端模式:运行真实 grok 二进制 -->
         <activity
-            android:name=".SettingsActivity"
+            android:name=".MainActivity"
             android:exported="false"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|smallestScreenSize|density"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/app_name" />
+
+        <activity android:name=".SettingsActivity" android:exported="false"
             android:label="@string/settings_title"
             android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity android:name=".AboutActivity" android:exported="false"
+            android:label="@string/about_title" />
 
+        <!-- 图形模式 -->
         <activity
-            android:name=".AboutActivity"
+            android:name=".gui.ChatActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/Theme.GrokBuild" />
+        <activity android:name=".gui.SettingsActivity" android:exported="false"
+            android:label="@string/settings_title"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".gui.AboutActivity" android:exported="false"
             android:label="@string/about_title" />
     </application>
 </manifest>
