@@ -66,6 +66,17 @@ object GrokLauncher {
             if (apiKey.isNotEmpty()) sb.append("api_key = ${tomlStr(apiKey)}\n")
         }
 
+        // 思考程度(reasoning effort)写入该模型段。
+        val effort = prefs.reasoningEffort.trim()
+        if (effort.isNotEmpty()) sb.append("reasoning_effort = ${tomlStr(effort)}\n")
+
+        // 用户高级配置片段:原样追加(MCP、权限、hooks、skills 等 grok 完整配置面)。
+        val extra = prefs.extraConfigToml.trim()
+        if (extra.isNotEmpty()) {
+            sb.append("\n# ── 用户自定义附加配置(App 设置里的“高级 config.toml”)──\n")
+            sb.append(extra).append("\n")
+        }
+
         File(grokHome(context), "config.toml").writeText(sb.toString())
         writeChineseRules(context)
     }
@@ -179,9 +190,17 @@ object GrokLauncher {
             bin.absolutePath,
             "-p", prompt,
             "--output-format", "streaming-json",
-            "--yolo", // 自动放行工具执行(headless 无交互权限弹窗)
             "--rules", "始终使用简体中文回复;执行删除/刷写/格式化等破坏性命令前先用一句话说明风险。"
         )
+        // 权限模式:yolo=自动放行;其它值经 --permission-mode 传给 grok。
+        when (prefs.permissionMode) {
+            "yolo", "" -> args.add("--yolo")
+            else -> { args.add("--permission-mode"); args.add(prefs.permissionMode) }
+        }
+        // 思考程度。
+        val effort = prefs.reasoningEffort.trim()
+        if (effort.isNotEmpty()) { args.add("--reasoning-effort"); args.add(effort) }
+
         val model = prefs.model(prefs.activeProviderId).trim()
         if (model.isNotEmpty()) { args.add("-m"); args.add(model) }
         if (!resumeSessionId.isNullOrEmpty()) { args.add("--resume"); args.add(resumeSessionId) }

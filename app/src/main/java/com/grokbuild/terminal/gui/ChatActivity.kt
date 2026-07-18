@@ -52,6 +52,7 @@ class ChatActivity : AppCompatActivity() {
         binding.menuButton.setOnClickListener { showMenu(it) }
         binding.rootStatus.setOnClickListener { requestRoot() }
         binding.sendButton.setOnClickListener { onSend() }
+        binding.statusText.setOnClickListener { switchModel() }
 
         binding.input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND) { onSend(); true } else false
@@ -170,7 +171,26 @@ class ChatActivity : AppCompatActivity() {
     private fun updateStatusLine() {
         val p = Providers.byId(prefs.activeProviderId)
         val model = prefs.model(p.id).ifBlank { p.defaultModel }
-        binding.statusText.text = "grok(真引擎) · ${p.display} · $model"
+        binding.statusText.text = "grok(真引擎) · ${p.display} · $model ▾"
+    }
+
+    /** 点顶部快速切换模型(从“常用模型”里选;下一轮 --resume 时以 -m 生效)。 */
+    private fun switchModel() {
+        val id = prefs.activeProviderId
+        val favs = prefs.favoriteModels(id)
+        if (favs.isEmpty()) {
+            Toast.makeText(this, R.string.no_favorites, Toast.LENGTH_LONG).show()
+            return
+        }
+        val arr = favs.toTypedArray()
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.switch_model)
+            .setItems(arr) { _, which ->
+                prefs.setModel(id, arr[which])
+                updateStatusLine()
+                adapter.add(ChatItem.System("已切换模型:${arr[which]}(下一条消息生效)"))
+            }
+            .show()
     }
 
     override fun onResume() {

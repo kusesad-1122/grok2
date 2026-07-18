@@ -17,8 +17,22 @@
     <string name="fetching_models">正在拉取模型列表…</string>
     <string name="fetch_failed">拉取失败:%1$s</string>
     <string name="no_models">未获取到模型,请检查 base_url 与 API Key,或手动填写。</string>
-    <string name="pick_model">选择模型</string>
+    <string name="pick_model">选择模型(可多选加入常用)</string>
     <string name="fetch_need_key">请先填写 API Key 再拉取模型。</string>
+    <string name="fav_added">已加入常用:%1$d 个模型</string>
+
+    <!-- Agent 高级设置 -->
+    <string name="label_effort">思考程度(reasoning effort)</string>
+    <string name="label_permission">权限模式</string>
+    <string name="label_advanced">高级:config.toml 附加片段(MCP / 权限 / hooks / skills)</string>
+    <string name="btn_advanced">编辑 config.toml 附加片段</string>
+    <string name="advanced_title">高级配置(config.toml 片段)</string>
+    <string name="advanced_hint">这里写的内容会原样追加进 ~/.grok/config.toml,即 grok 的完整官方配置面。示例:\n\n[mcp_servers.linear]\nurl = \"https://mcp.linear.app/mcp\"\n\n[mcp_servers.local]\ncommand = \"/data/local/tmp/server\"\nargs = [\"--flag\"]\nenv = { API_KEY = \"sk-...\" }\n\n[permission]\n# 细粒度权限规则\n</string>
+    <string name="advanced_saved">附加配置已保存,重启会话生效。</string>
+
+    <!-- 对话页模型快速切换 -->
+    <string name="switch_model">切换模型</string>
+    <string name="no_favorites">还没有常用模型。到「设置 → 拉取模型列表」多选加入。</string>
 
     <!-- 状态行 -->
     <string name="status_provider">厂商:%1$s</string>

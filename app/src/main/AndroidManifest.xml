@@ -38,6 +38,9 @@
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity android:name=".AboutActivity" android:exported="false"
             android:label="@string/about_title" />
+        <activity android:name=".AdvancedConfigActivity" android:exported="false"
+            android:label="@string/advanced_title"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- 图形模式 -->
         <activity
