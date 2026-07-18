@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- groknight 主题真实配色(Tokyo Night 系暗色),来自 grok-build 原项目 -->
+<resources>
+    <color name="gk_bg_term">#0a0a0a</color>
+    <color name="gk_bg_deepest">#0c0c0c</color>
+    <color name="gk_bg_dark">#111111</color>
+    <color name="gk_bg_main">#141414</color>
+    <color name="gk_bg_highlight">#242424</color>
+
+    <color name="gk_fg_main">#e1e1e1</color>
+    <color name="gk_fg_sub">#c8c8c8</color>
+    <color name="gk_fg_muted">#6c6c6c</color>
+
+    <color name="gk_blue">#7aa2f7</color>
+    <color name="gk_blue_deep">#3d59a1</color>
+    <color name="gk_cyan">#7dcfff</color>
+    <color name="gk_green">#9ece6a</color>
+    <color name="gk_teal">#73daca</color>
+    <color name="gk_magenta">#bb9af7</color>
+    <color name="gk_orange">#ff9e64</color>
+    <color name="gk_purple">#9d7cd8</color>
+    <color name="gk_red">#f7768e</color>
+    <color name="gk_yellow">#e0af68</color>
+    <color name="gk_gold">#FFDB8D</color>
+
+    <color name="gk_input_border">#323237</color>
+    <color name="gk_input_border_focus">#505058</color>
+    <color name="gk_link">#7aa6da</color>
+</resources>

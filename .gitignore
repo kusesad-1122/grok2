@@ -1,0 +1,15 @@
+.gradle/
+build/
+app/build/
+terminal-view/build/
+terminal-emulator/build/
+local.properties
+*.iml
+.idea/
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+# 交叉编译产物(超 GitHub 100MB 限制;由 README 的构建步骤生成)
+app/src/main/jniLibs/arm64-v8a/libgrok.so
+app/src/main/jniLibs/arm64-v8a/libc++_shared.so
