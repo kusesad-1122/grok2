@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grok Build</string>
+
+    <string name="hint_input">输入指令…(Enter 发送,Shift+Enter 换行)</string>
+    <string name="send">发送</string>
+    <string name="stop">停止</string>
+    <string name="thinking">grok 正在思考…</string>
+
+    <string name="role_user">用户</string>
+    <string name="role_assistant">grok</string>
+    <string name="role_tool_call">工具调用</string>
+    <string name="role_tool_result">工具结果</string>
+    <string name="role_system">系统</string>
+    <string name="role_error">错误</string>
+
+    <string name="status_root_on">Root:已授权</string>
+    <string name="status_root_off">Root:未授权(点此重试)</string>
+    <string name="status_root_unknown">Root:检测中…</string>
+    <string name="status_root_unavailable">Root:不可用</string>
+
+    <string name="menu_settings">设置</string>
+    <string name="menu_new_session">新会话</string>
+    <string name="menu_clear">清屏</string>
+    <string name="menu_about">关于</string>
+
+    <string name="settings_title">设置</string>
+    <string name="label_provider">厂商(Provider)</string>
+    <string name="label_base_url">接口地址 base_url</string>
+    <string name="label_api_key">API Key</string>
+    <string name="label_model">模型 model</string>
+    <string name="hint_api_key">粘贴该厂商的 API Key</string>
+    <string name="hint_model">留空则用默认模型</string>
+    <string name="model_note">提示:模型 ID 会随时间变化,如默认值失效请手动填写为当前有效的模型 ID。</string>
+    <string name="label_run_as_root">工具经 root 执行(需已授权)</string>
+    <string name="root_hint">开启后 run_shell / read_file / write_file 将以 root 身份落地;仅在已 root 的设备上生效。执行破坏性命令前,grok 会先说明风险。</string>
+    <string name="btn_save">保存</string>
+    <string name="saved_toast">已保存。</string>
+    <string name="anthropic_native_note">Anthropic(Claude)使用其原生 /v1/messages 协议(x-api-key + anthropic-version 头)。</string>
+
+    <string name="about_title">关于</string>
+    <string name="about_body">Grok Build(grok)是 SpaceXAI 开源的终端 AI 编码/运维 agent。\n\n本 GUI 版忠实还原 grok-build 的观感与交互范式(groknight 深色终端配色、等宽字、角色标签、透明的工具循环),做成适配触屏的移动图形界面。\n\n本项目移植自 xAI 开源项目 grok-build(Apache License 2.0)。保留原 LICENSE 与 THIRD-PARTY-NOTICES,注明移植出处。\n\n多厂商:统一的中立会话抽象封装 OpenAI 兼容与 Anthropic 原生两种协议;agent 工具循环与厂商解耦。</string>
+    <string name="about_source_rev">源码版本(SOURCE_REV):%1$s</string>
+
+    <string name="no_api_key_warn">当前厂商未设置 API Key,无法调用模型。请到“设置”填写。</string>
+    <string name="err_prefix">请求失败:</string>
+</resources>

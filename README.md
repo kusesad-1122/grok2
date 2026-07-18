@@ -110,3 +110,22 @@ grok2/
 
 ## 许可证
 Apache License 2.0。移植自 xai-org/grok-build;Termux 终端模块亦为 Apache-2.0。
+
+---
+
+## 附:图形 GUI 版(`gui` 模块 · 路线 B)
+
+除上面的终端真机版外,另提供一个 **grok 神似的图形对话 App**(`gui/` 模块,`dist/grok-build-gui.apk`):
+原生 Kotlin、软键盘正常唤起,忠实还原 groknight 深色终端观感——彩色角色标签(用户/grok/工具)、
+每次工具调用与结果都是独立可见卡片、命令面板式多行输入、顶部状态行。
+
+- **多厂商 · 两种协议真正实现**:统一中立会话抽象(`LlmClient`)封装
+  **OpenAI 兼容**(`OpenAiClient`,`/chat/completions` + `tools`/`tool_calls`)与
+  **Anthropic 原生**(`AnthropicClient`,`/messages` + content blocks + `x-api-key`/`anthropic-version`);
+  agent 工具循环(`Agent`)与厂商解耦。各厂商 Key 分别保存,base_url/模型可编辑。
+- **Root 工具**:`run_shell` / `read_file` / `write_file` 经(可选 root)shell 落地,
+  路径单引号转义、写入用 base64 传输;无 root 优雅失败不崩溃。
+- **全中文**:UI、文案、系统提示词全部简体中文;破坏性命令前要求先说明风险。
+- 两种协议的 JSON 序列化/解析与命令引用均有单元测试(`gui/src/test`,`:gui:testDebugUnitTest` 通过)。
+
+构建:`./gradlew :gui:assembleDebug` → `gui/build/outputs/apk/debug/gui-debug.apk`。

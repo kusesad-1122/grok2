@@ -17,5 +17,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "GrokBuild"
 include ":app"
+include ":gui"
 include ":terminal-view"
 include ":terminal-emulator"
