@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+android {
+    namespace "com.grokbuild.terminal"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.grokbuild.terminal"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "0.2.102-android"
+        // 仅打包 arm64:真实 grok 二进制交叉编译产物为 arm64-v8a
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
+    }
+
+    buildTypes {
+        debug {
+            // 使用调试签名,可直接侧载
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    // grok 二进制以 libgrok.so 形式随 APK 打包,并从 nativeLibraryDir 直接执行
+    // (Android 10+ 禁止执行可写目录内的文件,必须放入 lib/ 目录)
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+}
+
+dependencies {
+    implementation "androidx.core:core-ktx:1.13.1"
+    implementation "androidx.appcompat:appcompat:1.7.0"
+    implementation "com.google.android.material:material:1.12.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1"
+    // root 支持(检测/获取 root shell)
+    implementation "com.github.topjohnwu.libsu:core:5.2.2"
+    // 终端渲染 + PTY(vendored Termux 模块)
+    implementation project(":terminal-view")
+}

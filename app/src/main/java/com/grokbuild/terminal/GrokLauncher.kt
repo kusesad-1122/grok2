@@ -1,0 +1,144 @@
+package com.grokbuild.terminal
+
+import android.content.Context
+import com.termux.terminal.TerminalSession
+import com.termux.terminal.TerminalSessionClient
+import java.io.File
+
+/**
+ * 负责:
+ *  1. 定位随 APK 打包的真实 grok 原生可执行文件(libgrok.so,位于 nativeLibraryDir);
+ *  2. 依据当前 provider 生成 `$GROK_HOME/config.toml`(多厂商:OpenAI 兼容 / Anthropic 原生);
+ *  3. 组装环境变量并创建终端会话运行 grok TUI(可选经 root shell)。
+ */
+object GrokLauncher {
+
+    /** grok 二进制以 libgrok.so 形式打包,只有放在 lib 目录才能在 Android 10+ 上被执行。 */
+    fun grokBinary(context: Context): File {
+        val nativeDir = context.applicationInfo.nativeLibraryDir
+        return File(nativeDir, "libgrok.so")
+    }
+
+    fun isBinaryPresent(context: Context): Boolean = grokBinary(context).canExecute()
+
+    /** GROK_HOME:配置、auth、日志的家目录,放在应用私有目录。 */
+    private fun grokHome(context: Context): File =
+        File(context.filesDir, "grokhome").apply { mkdirs() }
+
+    private fun workDir(context: Context): File =
+        File(context.filesDir, "workspace").apply { mkdirs() }
+
+    /**
+     * 依据激活的 provider 写出真实 grok 能识别的 config.toml。
+     * OpenAI 兼容 → api_backend=chat_completions;Anthropic → messages + x-api-key/anthropic-version 头。
+     */
+    fun writeConfig(context: Context, prefs: Prefs) {
+        val p = Providers.byId(prefs.activeProviderId)
+        val baseUrl = prefs.baseUrl(p.id).trim()
+        val model = prefs.model(p.id).trim().ifEmpty { p.defaultModel }
+        val apiKey = prefs.apiKey(p.id).trim()
+
+        val sb = StringBuilder()
+        sb.append("# 本文件由 Grok Build 手机版自动生成(移植自 xai-org/grok-build,Apache-2.0)。\n")
+        sb.append("# 当前厂商:${p.display}\n\n")
+        sb.append("[models]\n")
+        sb.append("default = \"${p.id}\"\n\n")
+
+        sb.append("[model.${p.id}]\n")
+        sb.append("name = ${tomlStr(p.display)}\n")
+        sb.append("model = ${tomlStr(model)}\n")
+        if (baseUrl.isNotEmpty()) sb.append("base_url = ${tomlStr(baseUrl)}\n")
+        sb.append("api_backend = ${tomlStr(p.backend.toml)}\n")
+        sb.append("context_window = 200000\n")
+
+        if (p.isAnthropicNative) {
+            // Anthropic 原生:鉴权走 x-api-key + anthropic-version 头(grok 原样发送)。
+            if (apiKey.isNotEmpty()) {
+                sb.append(
+                    "extra_headers = { \"x-api-key\" = ${tomlStr(apiKey)}, " +
+                        "\"anthropic-version\" = \"2023-06-01\" }\n"
+                )
+            } else {
+                sb.append("extra_headers = { \"anthropic-version\" = \"2023-06-01\" }\n")
+            }
+        } else {
+            // OpenAI 兼容:Authorization: Bearer <api_key>
+            if (apiKey.isNotEmpty()) sb.append("api_key = ${tomlStr(apiKey)}\n")
+        }
+
+        File(grokHome(context), "config.toml").writeText(sb.toString())
+    }
+
+    /** TOML 字符串转义(基础安全:反斜杠与引号)。 */
+    private fun tomlStr(s: String): String {
+        val esc = s.replace("\\", "\\\\").replace("\"", "\\\"")
+        return "\"$esc\""
+    }
+
+    /** 组装环境变量数组。 */
+    private fun buildEnv(context: Context, prefs: Prefs): Array<String> {
+        val home = grokHome(context)
+        val p = Providers.byId(prefs.activeProviderId)
+        val apiKey = prefs.apiKey(p.id).trim()
+        val nativeDir = context.applicationInfo.nativeLibraryDir
+
+        val env = linkedMapOf(
+            "HOME" to home.absolutePath,
+            "GROK_HOME" to home.absolutePath,
+            "TMPDIR" to (File(context.cacheDir, "tmp").apply { mkdirs() }).absolutePath,
+            "PREFIX" to context.applicationInfo.dataDir,
+            "PATH" to "$nativeDir:/system/bin:/system/xbin",
+            "LD_LIBRARY_PATH" to nativeDir,
+            "TERM" to "xterm-256color",
+            "COLORTERM" to "truecolor",
+            "LANG" to "en_US.UTF-8",
+            // 移动端无浏览器 OAuth,靠 API Key / config.toml;关闭遥测与自动打开面板。
+            "GROK_TELEMETRY_ENABLED" to "0",
+            "GROK_OPEN_DASHBOARD_AT_STARTUP" to "0",
+            "GROK_FOLDER_TRUST" to "0"
+        )
+
+        // 让 grok 的全局 XAI_API_KEY 回退也拿到 key(xAI / OpenAI 兼容厂商)。
+        if (apiKey.isNotEmpty()) {
+            if (p.id == "xai") {
+                env["XAI_API_KEY"] = apiKey
+            }
+            if (p.isAnthropicNative) {
+                // 供 env_key 回退链使用。
+                env["ANTHROPIC_AUTH_TOKEN"] = apiKey
+            }
+        }
+        return env.map { "${it.key}=${it.value}" }.toTypedArray()
+    }
+
+    /**
+     * 创建并启动运行 grok 的终端会话。
+     * @param asRoot 为 true 且设备已 root 时,经 `su -c` 以 root 身份运行 grok。
+     */
+    fun createSession(
+        context: Context,
+        prefs: Prefs,
+        client: TerminalSessionClient,
+        asRoot: Boolean
+    ): TerminalSession {
+        writeConfig(context, prefs)
+        val bin = grokBinary(context)
+        val env = buildEnv(context, prefs)
+        val cwd = workDir(context).absolutePath
+
+        val shellPath: String
+        val args: Array<String>
+        if (asRoot && RootManager.hasRootBinary()) {
+            // 以 root 运行:su -c "exec libgrok.so"
+            shellPath = RootManager.suPath() ?: "su"
+            args = arrayOf(shellPath, "-c", "exec ${shellQuote(bin.absolutePath)}")
+        } else {
+            shellPath = bin.absolutePath
+            args = arrayOf(bin.absolutePath)
+        }
+
+        return TerminalSession(shellPath, cwd, args, env, /*transcriptRows=*/2000, client)
+    }
+
+    private fun shellQuote(s: String): String = "'" + s.replace("'", "'\\''") + "'"
+}

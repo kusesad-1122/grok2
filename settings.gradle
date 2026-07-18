@@ -1,0 +1,21 @@
+// Grok Build 手机移植工程 —— 终端宿主(路线 A:运行真实交叉编译的 grok 二进制)
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") } // libsu(root)
+    }
+}
+
+rootProject.name = "GrokBuild"
+include ":app"
+include ":terminal-view"
+include ":terminal-emulator"

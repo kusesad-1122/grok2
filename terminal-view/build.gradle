@@ -1,0 +1,27 @@
+// Termux terminal-view 模块(vendored,Apache-2.0)
+// 提供触屏可交互的 TerminalView 渲染 widget。
+apply plugin: 'com.android.library'
+
+android {
+    namespace "com.termux.view"
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 34
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    implementation "androidx.annotation:annotation:1.9.0"
+    api project(":terminal-emulator")
+}

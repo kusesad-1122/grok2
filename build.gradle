@@ -1,0 +1,11 @@
+// 根构建脚本
+buildscript {
+    dependencies {
+        // AGP 与 Kotlin 插件在 settings 的 pluginManagement 里解析
+    }
+}
+plugins {
+    id 'com.android.application' version '8.7.2' apply false
+    id 'com.android.library' version '8.7.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.24' apply false
+}

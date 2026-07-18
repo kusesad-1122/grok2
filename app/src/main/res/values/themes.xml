@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Grok Build 深色终端主题 -->
+    <style name="Theme.GrokBuild" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/gk_blue</item>
+        <item name="colorOnPrimary">@color/gk_bg_term</item>
+        <item name="colorSecondary">@color/gk_magenta</item>
+        <item name="android:colorBackground">@color/gk_bg_term</item>
+        <item name="colorSurface">@color/gk_bg_main</item>
+        <item name="colorOnSurface">@color/gk_fg_main</item>
+        <item name="android:statusBarColor">@color/gk_bg_deepest</item>
+        <item name="android:navigationBarColor">@color/gk_bg_deepest</item>
+        <item name="android:windowBackground">@color/gk_bg_term</item>
+        <item name="android:textColorPrimary">@color/gk_fg_main</item>
+        <item name="android:textColorSecondary">@color/gk_fg_sub</item>
+    </style>
+
+    <style name="Theme.GrokBuild.Settings" parent="Theme.Material3.Dark">
+        <item name="colorPrimary">@color/gk_blue</item>
+        <item name="colorOnPrimary">@color/gk_bg_term</item>
+        <item name="android:colorBackground">@color/gk_bg_main</item>
+        <item name="colorSurface">@color/gk_bg_dark</item>
+        <item name="colorOnSurface">@color/gk_fg_main</item>
+        <item name="android:statusBarColor">@color/gk_bg_deepest</item>
+    </style>
+</resources>

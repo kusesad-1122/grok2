@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grok Build</string>
+
+    <!-- 状态行 -->
+    <string name="status_provider">厂商:%1$s</string>
+    <string name="status_model">模型:%1$s</string>
+    <string name="status_root_on">Root:已授权</string>
+    <string name="status_root_off">Root:未授权(点此重试)</string>
+    <string name="status_root_unknown">Root:检测中…</string>
+    <string name="status_root_unavailable">Root:不可用</string>
+
+    <!-- 菜单 -->
+    <string name="menu_settings">设置</string>
+    <string name="menu_new_session">新会话</string>
+    <string name="menu_restart">重启 grok</string>
+    <string name="menu_about">关于</string>
+    <string name="menu_paste">粘贴</string>
+    <string name="menu_font_bigger">字体放大</string>
+    <string name="menu_font_smaller">字体缩小</string>
+
+    <!-- 设置页 -->
+    <string name="settings_title">设置</string>
+    <string name="label_provider">厂商(Provider)</string>
+    <string name="label_base_url">接口地址 base_url</string>
+    <string name="label_api_key">API Key</string>
+    <string name="label_model">模型 model</string>
+    <string name="hint_api_key">粘贴该厂商的 API Key</string>
+    <string name="hint_model">留空则用默认模型</string>
+    <string name="model_note">提示:模型 ID 会随时间变化,如默认值失效请手动填写为当前有效的模型 ID。</string>
+    <string name="label_run_as_root">以 root 运行 grok(需已授权)</string>
+    <string name="root_hint">开启后 grok 的 shell 工具将以 root 身份执行命令;仅在已 root 的设备上生效。执行删除/刷写/格式化等破坏性命令前请留意 grok 给出的风险说明。</string>
+    <string name="btn_save">保存并应用</string>
+    <string name="btn_save_restart">保存并重启 grok</string>
+    <string name="saved_toast">已保存。重启 grok 后生效。</string>
+    <string name="anthropic_native_note">Anthropic(Claude)使用其原生 /v1/messages 协议(x-api-key 鉴权)。grok 原生支持该协议,通过 ANTHROPIC_AUTH_TOKEN 注入。</string>
+
+    <!-- 关于页 -->
+    <string name="about_title">关于</string>
+    <string name="about_body">Grok Build(grok)是 SpaceXAI 开源的终端 AI 编码/运维 agent。\n\n本 App 将原项目 Rust 源码交叉编译为 aarch64-linux-android 原生可执行文件,并内嵌终端模拟器在安卓手机上 1:1 运行原始 TUI(路线 A)。\n\n本项目移植自 xAI 开源项目 grok-build(Apache License 2.0)。保留原 LICENSE 与 THIRD-PARTY-NOTICES,未移除任何版权声明。\n\n终端渲染与 PTY 采用 Termux 的 terminal-view / terminal-emulator 模块(Apache-2.0)。\n\n多厂商:grok 原生支持 base_url + api_key + model 的 provider 配置,可在“设置”中切换 xAI / OpenAI / Anthropic / OpenRouter / DeepSeek / Gemini / Ollama / 自定义。</string>
+    <string name="about_source_rev">源码版本(SOURCE_REV):%1$s</string>
+
+    <!-- 运行时提示 -->
+    <string name="grok_starting">正在启动 grok…</string>
+    <string name="grok_exited">grok 进程已退出(退出码 %1$d)。使用菜单“重启 grok”。</string>
+    <string name="binary_missing">未找到 grok 原生库(libgrok.so)。本 APK 可能未包含 arm64 二进制。</string>
+    <string name="no_api_key_warn">当前厂商未设置 API Key,grok 可能无法调用模型。请到“设置”填写。</string>
+</resources>
