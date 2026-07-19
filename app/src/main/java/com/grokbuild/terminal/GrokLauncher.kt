@@ -66,6 +66,17 @@ object GrokLauncher {
             if (apiKey.isNotEmpty()) sb.append("api_key = ${tomlStr(apiKey)}\n")
         }
 
+        // 思考程度(reasoning effort)写入该模型段。
+        val effort = prefs.reasoningEffort.trim()
+        if (effort.isNotEmpty()) sb.append("reasoning_effort = ${tomlStr(effort)}\n")
+
+        // 用户高级配置片段:原样追加(MCP、权限、hooks、skills 等 grok 完整配置面)。
+        val extra = prefs.extraConfigToml.trim()
+        if (extra.isNotEmpty()) {
+            sb.append("\n# ── 用户自定义附加配置(App 设置里的“高级 config.toml”)──\n")
+            sb.append(extra).append("\n")
+        }
+
         File(grokHome(context), "config.toml").writeText(sb.toString())
         writeChineseRules(context)
     }
@@ -159,4 +170,52 @@ object GrokLauncher {
     }
 
     private fun shellQuote(s: String): String = "'" + s.replace("'", "'\\''") + "'"
+
+    // ── 图形模式:用真 grok 的 headless streaming-json 驱动 ──────────────
+    /**
+     * 构建 headless 单轮进程:`grok -p <prompt> --output-format streaming-json --yolo
+     * [--resume <sid>] --rules <中文规则>`。GUI 前端读取其 JSON 事件流渲染,
+     * 后端就是真实 grok 引擎(它自己的完整工具集 + 权限,--yolo 自动放行)。
+     * 与终端模式共用同一份 config.toml / 环境 / GROK_HOME(即同一套厂商配置与会话)。
+     */
+    fun buildHeadlessProcess(
+        context: Context,
+        prefs: Prefs,
+        prompt: String,
+        resumeSessionId: String?
+    ): ProcessBuilder {
+        writeConfig(context, prefs)
+        val bin = grokBinary(context)
+        val args = mutableListOf(
+            bin.absolutePath,
+            "-p", prompt,
+            "--output-format", "streaming-json",
+            "--rules", "始终使用简体中文回复;执行删除/刷写/格式化等破坏性命令前先用一句话说明风险。"
+        )
+        // 权限模式:yolo=自动放行;其它值经 --permission-mode 传给 grok。
+        when (prefs.permissionMode) {
+            "yolo", "" -> args.add("--yolo")
+            else -> { args.add("--permission-mode"); args.add(prefs.permissionMode) }
+        }
+        // 思考程度。
+        val effort = prefs.reasoningEffort.trim()
+        if (effort.isNotEmpty()) { args.add("--reasoning-effort"); args.add(effort) }
+
+        val model = prefs.model(prefs.activeProviderId).trim()
+        if (model.isNotEmpty()) { args.add("-m"); args.add(model) }
+        if (!resumeSessionId.isNullOrEmpty()) { args.add("--resume"); args.add(resumeSessionId) }
+
+        val pb = ProcessBuilder(args)
+        pb.directory(workDir(context))
+        pb.redirectErrorStream(false)
+        val envMap = pb.environment()
+        // 用我们组装的 env 覆盖(ProcessBuilder 默认继承当前进程环境)。
+        for (kv in buildEnv(context, prefs)) {
+            val idx = kv.indexOf('=')
+            if (idx > 0) envMap[kv.substring(0, idx)] = kv.substring(idx + 1)
+        }
+        return pb
+    }
+
+    fun isBinaryReady(context: Context): Boolean = grokBinary(context).canExecute()
 }

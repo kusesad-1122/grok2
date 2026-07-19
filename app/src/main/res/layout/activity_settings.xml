@@ -40,6 +40,16 @@
             android:hint="@string/hint_model"
             android:inputType="text" />
 
+        <Button
+            android:id="@+id/fetchModelsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/btn_fetch_models"
+            android:textSize="13sp"
+            android:textColor="@color/gk_bg_term"
+            android:backgroundTint="@color/gk_teal" />
+
         <TextView style="@style/GkLabel" android:text="@string/label_api_key" />
         <EditText
             android:id="@+id/apiKeyInput"
@@ -56,6 +66,24 @@
             android:fontFamily="monospace"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp" />
+
+        <TextView style="@style/GkLabel" android:text="@string/label_effort" />
+        <Spinner android:id="@+id/effortSpinner"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView style="@style/GkLabel" android:text="@string/label_permission" />
+        <Spinner android:id="@+id/permissionSpinner"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView style="@style/GkLabel" android:text="@string/label_advanced" />
+        <Button android:id="@+id/advancedButton"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/btn_advanced"
+            android:textColor="@color/gk_fg_main"
+            android:backgroundTint="@color/gk_bg_highlight" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -104,4 +104,35 @@ class Prefs(context: Context) {
 
     fun apiKey(id: String): String = sp.getString("api_key_$id", "") ?: ""
     fun setApiKey(id: String, v: String) = sp.edit().putString("api_key_$id", v).apply()
+
+    // ── Agent 高级设置(真 grok 支持,现予以暴露)──────────────────────
+
+    /** 思考程度:""(默认)/ minimal / low / medium / high。CLI --reasoning-effort。 */
+    var reasoningEffort: String
+        get() = sp.getString("reasoning_effort", "") ?: ""
+        set(v) = sp.edit().putString("reasoning_effort", v).apply()
+
+    /** 权限模式:yolo(自动放行)/ read-only / default。图形模式经 CLI 生效。 */
+    var permissionMode: String
+        get() = sp.getString("permission_mode", "yolo") ?: "yolo"
+        set(v) = sp.edit().putString("permission_mode", v).apply()
+
+    /** 每个厂商的“常用模型”集合,便于在对话里快速切换。 */
+    fun favoriteModels(id: String): List<String> =
+        (sp.getStringSet("fav_models_$id", emptySet()) ?: emptySet()).sorted()
+    fun setFavoriteModels(id: String, models: Set<String>) =
+        sp.edit().putStringSet("fav_models_$id", models).apply()
+    fun addFavoriteModels(id: String, models: Collection<String>) {
+        val cur = (sp.getStringSet("fav_models_$id", emptySet()) ?: emptySet()).toMutableSet()
+        cur.addAll(models); setFavoriteModels(id, cur)
+    }
+
+    /**
+     * 高级:用户自定义的 config.toml 附加片段(原样追加进 ~/.grok/config.toml)。
+     * 这是 grok 完整配置面的入口——可写 [mcp_servers.*]、[permission]、hooks、
+     * skills 目录、[agent] 等任意官方配置。
+     */
+    var extraConfigToml: String
+        get() = sp.getString("extra_config_toml", "") ?: ""
+        set(v) = sp.edit().putString("extra_config_toml", v).apply()
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gk_bg_main"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView style="@style/GkLabel" android:text="@string/gui_label_provider" />
+        <Spinner android:id="@+id/providerSpinner"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp" />
+
+        <TextView android:id="@+id/providerNote"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/gk_fg_muted" android:textSize="12sp"
+            android:fontFamily="monospace" android:layout_marginBottom="12dp" />
+
+        <TextView style="@style/GkLabel" android:text="@string/gui_label_base_url" />
+        <EditText android:id="@+id/baseUrlInput" style="@style/GkInput" android:inputType="textUri" />
+
+        <TextView style="@style/GkLabel" android:text="@string/gui_label_model" />
+        <EditText android:id="@+id/modelInput" style="@style/GkInput"
+            android:hint="@string/gui_hint_model" android:inputType="text" />
+
+        <TextView style="@style/GkLabel" android:text="@string/gui_label_api_key" />
+        <EditText android:id="@+id/apiKeyInput" style="@style/GkInput"
+            android:hint="@string/gui_hint_api_key" android:inputType="textPassword" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/gui_model_note" android:textColor="@color/gk_yellow"
+            android:textSize="12sp" android:fontFamily="monospace"
+            android:layout_marginTop="4dp" android:layout_marginBottom="16dp" />
+
+        <CheckBox android:id="@+id/rootCheck"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:buttonTint="@color/gk_blue" android:textColor="@color/gk_fg_main"
+            android:text="@string/gui_label_run_as_root" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/gui_root_hint" android:textColor="@color/gk_fg_muted"
+            android:textSize="12sp" android:fontFamily="monospace" android:layout_marginBottom="20dp" />
+
+        <Button android:id="@+id/saveButton"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/gui_btn_save" android:textColor="@color/gk_bg_term"
+            android:backgroundTint="@color/gk_blue" />
+    </LinearLayout>
+</ScrollView>

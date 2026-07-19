@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/gk_bg_main"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/advanced_hint"
+        android:textColor="@color/gk_fg_muted"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/configInput"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="top|start"
+        android:background="@color/gk_bg_deepest"
+        android:fontFamily="monospace"
+        android:textSize="13sp"
+        android:textColor="@color/gk_fg_main"
+        android:textColorHint="@color/gk_fg_muted"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:padding="10dp"
+        android:importantForAutofill="no" />
+
+    <Button
+        android:id="@+id/saveConfigButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/btn_save"
+        android:textColor="@color/gk_bg_term"
+        android:backgroundTint="@color/gk_blue" />
+</LinearLayout>
